@@ -135,6 +135,8 @@ func main() {
 				err = bud.Execute(act)
 				if budget.IsCancel(err) {
 					break
+				} else if budget.IsPassed(err) {
+					break
 				} else if err != nil {
 					log.Fatal(err)
 				}
