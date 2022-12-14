@@ -1,0 +1,62 @@
+name: "go-run-schedule"
+
+on:
+  push:
+  schedule:
+    - cron: "0 1 * * *"
+
+jobs:
+  go-run-schedule:
+    runs-on: "ubuntu-latest"
+    steps:
+
+      - name: "Setup Git Project"
+        uses: "actions/checkout@v3"
+
+      - name: "Setup Go Env"
+        uses: "actions/setup-go@v3"
+        with:
+          cache: true
+          go-version: "1.19.2"
+
+      - name: "Update Rewards CSV"
+        run: |
+          go run main.go
+
+      - name: Decrypt Private Key
+        run: |
+          go get github.com/xh3b4sd/red
+          red decrypt -i .github/asset/id_rsa.enc -o .github/asset/id_rsa -p '${{ secrets.RED_GPG_PASS }}'
+
+      - name: Setup SSH Agent
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          ssh-agent -a ${SSH_AUTH_SOCK} > /dev/null
+          chmod 0600 .github/asset/id_rsa
+          ssh-add .github/asset/id_rsa
+
+      - name: Setup Git Config
+        working-directory: "${{ runner.temp }}/xh3b4sd/eth-staking-rewards/"
+        run: |
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git remote set-url origin git@github.com:xh3b4sd/eth-staking-rewards.git
+
+      - name: Commit And Push
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+        working-directory: "${{ runner.temp }}/xh3b4sd/eth-staking-rewards/"
+        run: |
+          git add .
+          git commit -m 'update rewards.csv'
+          git push
+
+      - name: Cleanup Build Container
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+        run: |
+          ssh-add -D
+          rm -Rf *
