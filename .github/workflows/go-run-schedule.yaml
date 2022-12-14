@@ -1,7 +1,7 @@
 name: "go-run-schedule"
 
 on:
-  push:
+  push: 
   schedule:
     - cron: "0 1 * * *"
 
@@ -24,6 +24,7 @@ jobs:
           go run main.go
 
       - name: Decrypt Private Key
+        working-directory: "${{ runner.temp }}/xh3b4sd/eth-staking-rewards/"
         run: |
           go get github.com/xh3b4sd/red
           red decrypt -i .github/asset/id_rsa.enc -o .github/asset/id_rsa -p '${{ secrets.RED_GPG_PASS }}'
