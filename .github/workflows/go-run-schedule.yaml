@@ -25,7 +25,7 @@ jobs:
 
       - name: "Decrypt Private Key"
         run: |
-          go get github.com/xh3b4sd/red
+          go install github.com/xh3b4sd/red
           red decrypt -h
           red decrypt -i .github/asset/id_rsa.enc -o .github/asset/id_rsa -p '${{ secrets.RED_GPG_PASS }}'
 
