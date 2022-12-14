@@ -26,6 +26,7 @@ jobs:
       - name: "Decrypt Private Key"
         run: |
           go get github.com/xh3b4sd/red
+          red decrypt -h
           red decrypt -i .github/asset/id_rsa.enc -o .github/asset/id_rsa -p '${{ secrets.RED_GPG_PASS }}'
 
       - name: "Setup SSH Agent"
@@ -49,8 +50,8 @@ jobs:
           SSH_AUTH_SOCK: "/tmp/ssh_agent.sock"
         run: |
           if [[ $(git status --porcelain go.mod go.sum) ]]; then
-            git add go.mod go.sum
-            git commit -m "go mod tidy"
+            git add rewards.csv
+            git commit -m "update rewards.csv"
             git push
           fi
 
