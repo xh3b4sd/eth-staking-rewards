@@ -1,7 +1,9 @@
 name: "go-run-schedule"
 
 on:
-  push: "main"
+  push:
+    branches:
+      - "main"
   schedule:
     - cron: "0 1 * * *"
 

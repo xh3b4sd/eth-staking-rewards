@@ -20,7 +20,7 @@ import (
 const (
 	apifmt = "https://beaconcha.in/api/v1/ethstore/%d"
 	dayzer = "2020-12-01T00:00:00Z"
-	reqlim = 5
+	reqlim = 20
 	rewfil = "rewards.csv"
 )
 
