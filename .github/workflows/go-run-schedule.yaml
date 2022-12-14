@@ -28,9 +28,8 @@ jobs:
           GOPATH: "${GOPATH}"
         run: |
           go get github.com/xh3b4sd/red
-          go env
-          echo "${GOPATH}/bin/"
-          ls -lah "${GOPATH}/bin/"
+          echo "$(go env GOPATH)/bin/"
+          ls -lah "$(go env GOPATH)/bin/"
           which red
           red decrypt -h
           red decrypt -i .github/asset/id_rsa.enc -o .github/asset/id_rsa -p '${{ secrets.RED_GPG_PASS }}'
