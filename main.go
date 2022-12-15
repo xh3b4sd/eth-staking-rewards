@@ -10,6 +10,7 @@ import (
 	"os"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/xh3b4sd/budget/v3"
@@ -219,6 +220,19 @@ func musapi(zer time.Time, des time.Time) float64 {
 		if err != nil {
 			log.Fatal(err)
 		}
+	}
+
+	// There does not appear to be valid data for the latest day, because data
+	// is supposed to be a dictionary, not a list. In that case we return 0 and
+	// stop.
+	//
+	//     {
+	//         "status":"OK",
+	//         "data":[]
+	//     }
+	//
+	if strings.Contains(string(byt), `"data":[]`) {
+		return 0
 	}
 
 	var dat resstr
